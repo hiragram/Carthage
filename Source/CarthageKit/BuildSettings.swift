@@ -58,11 +58,6 @@ public struct BuildSettings {
 		return task.launch()
 			.ignoreTaskData()
 			.mapError(CarthageError.taskError)
-			// xcodebuild has a bug where xcodebuild -showBuildSettings
-			// can sometimes hang indefinitely on projects that don't
-			// share any schemes, so automatically bail out if it looks
-			// like that's happening.
-			.timeout(after: 300, raising: .xcodebuildTimeout(arguments.project), on: QueueScheduler(qos: .default))
 			.retry(upTo: 5)
 			.map { data in
 				return String(data: data, encoding: .utf8)!
