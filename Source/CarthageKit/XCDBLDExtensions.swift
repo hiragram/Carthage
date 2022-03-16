@@ -73,10 +73,6 @@ extension ProjectLocator {
 		return task.launch()
 			.ignoreTaskData()
 			.mapError(CarthageError.taskError)
-			// xcodebuild has a bug where xcodebuild -list can sometimes hang
-			// indefinitely on projects that don't share any schemes, so
-			// automatically bail out if it looks like that's happening.
-			.timeout(after: 60, raising: .xcodebuildTimeout(self), on: QueueScheduler())
 			.retry(upTo: 2)
 			.map { data in
 				return String(data: data, encoding: .utf8)!
